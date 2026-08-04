@@ -1,0 +1,35 @@
+[
+  {
+    "fetched_at": "2026-08-04T11:30:39Z",
+    "item": {
+      "publishedfileid": "3776340098",
+      "result": 1,
+      "creator": "76561198922637606",
+      "creator_app_id": 1066780,
+      "consumer_app_id": 1066780,
+      "filename": "",
+      "file_size": "629359",
+      "file_url": "",
+      "hcontent_file": "1660836775442219050",
+      "preview_url": "https://images.steamusercontent.com/ugc/11767024493446589947/696C7CE6EEDAC577887853B57C34D2757C8AEC9A/",
+      "hcontent_preview": "11767024493446589947",
+      "title": "Dispatch Core [ALPHA]",
+      "description": "Your lines depart on time: timetables at the termini, measured statistics for\r\nyour whole network, and reserve vehicles recalled in one click when a\r\ndeparture is at risk.\r\n\r\n[b]What the mod does[/b]\r\n\r\n[b]Measured statistics[/b] — The mod watches your vehicles and computes, for\r\nevery line: trip time, real frequency, average stop, load and speed. Nothing\r\nto configure, everything is measured as you play, and the measurements\r\nsurvive saving and loading.\r\n\r\n[b]Timetables at the termini[/b] — Pick a line, switch it to Timetable mode,\r\nadd the departures of each hour (for example h03 and h33): your vehicles will\r\nleave the termini at those minutes. Three settings frame the rule: minimum\r\nstop (floor), delay tolerance, and maximum hold (safety ceiling, so a vehicle\r\nnever waits forever).\r\n\r\n[b]Reserve pool[/b] — Park a vehicle at any siding station from its vehicle\r\nwindow: the parking line is created automatically, the vehicle drives there\r\non its own, and the line is removed once nobody uses it. When a slot is at\r\nrisk for lack of rolling stock, a window offers the available vehicles with\r\ntheir distance and estimated arrival. You pick one, it goes straight to the\r\nthreatened terminus without serving intermediate stops. The reserve pool is\r\nshared network-wide: any parked vehicle can rescue any compatible line.\r\n\r\n[b]Built-in help[/b] — Dispatch menu > Help: three short recipes to get\r\nstarted, plus the important warnings.\r\n\r\n[b]What the mod does NOT do[/b]\r\n\r\n[list]\r\n[*] It NEVER touches your tracks, stations or lines: the only lever it uses\r\nis holding vehicles at the platform.\r\n[*] It never parks anything on its own: you decide, it executes.\r\n[*] It does not replace the game's management: buying, selling and sending\r\nto a depot remain yours.\r\n[*] Combined behaviour with other scheduling mods (Timetables for instance)\r\nis undefined: use only one regulation mod at a time.\r\n[/list]\r\n\r\n[b]Good to know[/b]\r\n\r\n[list]\r\n[*] A track-only station mod is required for clean sidings (see required\r\nitems).\r\n[*] On a regulated line, set the GAME's minimum waiting time to zero at the\r\ntermini and use the mod's \"Minimum stop\" instead: otherwise both add up. The\r\nmod warns you in the log.\r\n[*] Very long lines (round trip approaching one hour of game time) cannot be\r\nrun on a timetable: the mod tells you.\r\n[*] Removing the mod mid-game leaves vehicles held: recall your reserves\r\nfirst.\r\n[/list]\r\n\r\n[b]ALPHA version[/b] — The mod works and has been tested,\r\nbut this is a first release. Feedback in the comments is welcome, especially\r\nunexpected behaviour.\r\n\r\nInterface and help translated into English, French and German.\r\n",
+      "time_created": 1785681538,
+      "time_updated": 1785708151,
+      "visibility": 0,
+      "banned": 0,
+      "ban_reason": "",
+      "subscriptions": 368,
+      "favorited": 29,
+      "lifetime_subscriptions": 393,
+      "lifetime_favorited": 29,
+      "views": 1281,
+      "tags": [
+        {
+          "tag": "Script Mod"
+        }
+      ]
+    }
+  }
+]
