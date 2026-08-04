@@ -1,0 +1,58 @@
+name: steam-stats
+
+# Relève les stats Workshop de Dispatch Core une fois par jour et les archive
+# dans le dépôt. Tourne sur les serveurs GitHub : aucune machine à allumer.
+
+on:
+  schedule:
+    # 05:00 UTC — avant le rapport quotidien. Cron GitHub est en UTC.
+    - cron: '0 5 * * *'
+  workflow_dispatch:   # permet aussi de le lancer à la main depuis le téléphone
+
+permissions:
+  contents: write
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Relever les stats Steam
+        run: |
+          set -euo pipefail
+          ITEM=3776340098
+          mkdir -p data
+          curl -sS --fail-with-body -X POST \
+            "https://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/v1/" \
+            -d "itemcount=1" -d "publishedfileids[0]=${ITEM}" \
+            -o /tmp/raw.json
+
+          python3 - <<'PY'
+          import json, os, datetime
+
+          raw = json.load(open('/tmp/raw.json'))
+          item = raw['response']['publishedfiledetails'][0]
+
+          stamp = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+          entry = {'fetched_at': stamp, 'item': item}
+
+          path = 'data/history.json'
+          hist = json.load(open(path)) if os.path.exists(path) else []
+          hist.append(entry)
+
+          json.dump(hist, open(path, 'w'), indent=2, ensure_ascii=False)
+          json.dump(entry, open('data/latest.json', 'w'), indent=2, ensure_ascii=False)
+
+          # Affiché dans les logs Actions pour vérifier d'un coup d'oeil
+          keys = [k for k in item if 'subscri' in k or 'favor' in k or k == 'views']
+          print(json.dumps({k: item[k] for k in keys}, indent=2))
+          PY
+
+      - name: Commit
+        run: |
+          git config user.name  "steam-stats-bot"
+          git config user.email "actions@github.com"
+          git add data/
+          git diff --staged --quiet || git commit -m "stats $(date -u +%F)"
+          git push
