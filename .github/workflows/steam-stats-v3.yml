@@ -1,0 +1,101 @@
+name: steam-stats
+
+on:
+  schedule:
+    - cron: '0 5 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Relever les stats Steam
+        env:
+          STEAM_API_KEY: ${{ secrets.STEAM_API_KEY }}
+        run: |
+          set -euo pipefail
+          ITEM=3776340098
+          mkdir -p data
+
+          # Compteurs : endpoint public, aucune cle requise.
+          curl -sS --fail-with-body -X POST \
+            "https://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/v1/" \
+            -d "itemcount=1" -d "publishedfileids[0]=${ITEM}" \
+            -o /tmp/raw.json
+
+          # Notes : necessite la cle API (secret STEAM_API_KEY).
+          # Best-effort volontaire : un echec ici ne doit pas faire tomber le releve des compteurs.
+          rm -f /tmp/votes.json
+          if [ -n "${STEAM_API_KEY:-}" ]; then
+            curl -sS --fail-with-body --get \
+              "https://api.steampowered.com/IPublishedFileService/GetDetails/v1/" \
+              --data-urlencode "key=${STEAM_API_KEY}" \
+              --data-urlencode "publishedfileids[0]=${ITEM}" \
+              --data-urlencode "includevotes=true" \
+              -o /tmp/votes.json \
+              || echo "::warning::recuperation des notes echouee, compteurs conserves"
+          else
+            echo "::warning::secret STEAM_API_KEY absent, notes non relevees"
+          fi
+
+          python3 - <<'PY'
+          import json, os, csv, datetime
+
+          item = json.load(open('/tmp/raw.json'))['response']['publishedfiledetails'][0]
+
+          votes = {}
+          if os.path.exists('/tmp/votes.json'):
+              try:
+                  d = json.load(open('/tmp/votes.json'))['response']['publishedfiledetails'][0]
+                  votes = d.get('vote_data') or {}
+              except Exception as e:
+                  print('reponse votes illisible:', e)
+
+          stamp = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+
+          row = {
+              'fetched_at':             stamp,
+              'subscriptions':          item.get('subscriptions', ''),
+              'lifetime_subscriptions': item.get('lifetime_subscriptions', ''),
+              'favorited':              item.get('favorited', ''),
+              'lifetime_favorited':     item.get('lifetime_favorited', ''),
+              'views':                  item.get('views', ''),
+              'votes_up':               votes.get('votes_up', ''),
+              'votes_down':             votes.get('votes_down', ''),
+              'score':                  votes.get('score', ''),
+          }
+          COLS = list(row)
+
+          # Archive brute du jour, ecrasee a chaque fois (pas de gonflement).
+          json.dump({'fetched_at': stamp, 'item': item, 'vote_data': votes},
+                    open('data/latest.json', 'w'), indent=2, ensure_ascii=False)
+
+          # Serie compacte. Relit puis reecrit : migre l'en-tete si des colonnes
+          # ont ete ajoutees, sans perdre l'historique deja collecte.
+          path = 'data/series.csv'
+          rows = []
+          if os.path.exists(path):
+              with open(path, newline='') as f:
+                  rows = list(csv.DictReader(f))
+          rows.append(row)
+          with open(path, 'w', newline='') as f:
+              w = csv.DictWriter(f, fieldnames=COLS, extrasaction='ignore')
+              w.writeheader()
+              for r in rows:
+                  w.writerow({c: r.get(c, '') for c in COLS})
+
+          print(json.dumps({c: row[c] for c in COLS if c != 'fetched_at'}, indent=2))
+          PY
+
+      - name: Commit
+        run: |
+          git config user.name  "steam-stats-bot"
+          git config user.email "actions@github.com"
+          git add data/
+          git diff --staged --quiet || git commit -m "stats $(date -u +%F)"
+          git push
