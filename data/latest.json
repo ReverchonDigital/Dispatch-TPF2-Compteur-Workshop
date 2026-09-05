@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-09-04T09:24:43Z",
+  "fetched_at": "2026-09-05T08:53:37Z",
   "item": {
     "publishedfileid": "3776340098",
     "result": 1,
@@ -19,11 +19,11 @@
     "visibility": 0,
     "banned": 0,
     "ban_reason": "",
-    "subscriptions": 1297,
-    "favorited": 106,
-    "lifetime_subscriptions": 1516,
-    "lifetime_favorited": 114,
-    "views": 5019,
+    "subscriptions": 1295,
+    "favorited": 107,
+    "lifetime_subscriptions": 1519,
+    "lifetime_favorited": 115,
+    "views": 5041,
     "tags": [
       {
         "tag": "Script Mod"
@@ -31,8 +31,8 @@
     ]
   },
   "vote_data": {
-    "score": 0.6357142925262451,
-    "votes_up": 39,
+    "score": 0.6382978558540344,
+    "votes_up": 40,
     "votes_down": 1
   }
 }
