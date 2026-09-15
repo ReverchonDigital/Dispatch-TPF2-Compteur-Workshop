@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-09-14T10:27:41Z",
+  "fetched_at": "2026-09-15T09:53:04Z",
   "item": {
     "publishedfileid": "3776340098",
     "result": 1,
@@ -19,11 +19,11 @@
     "visibility": 0,
     "banned": 0,
     "ban_reason": "",
-    "subscriptions": 1359,
-    "favorited": 111,
-    "lifetime_subscriptions": 1622,
-    "lifetime_favorited": 119,
-    "views": 5318,
+    "subscriptions": 1366,
+    "favorited": 112,
+    "lifetime_subscriptions": 1633,
+    "lifetime_favorited": 120,
+    "views": 5343,
     "tags": [
       {
         "tag": "Script Mod"
